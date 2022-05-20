@@ -13,6 +13,10 @@ class _FormColetaState extends State<FormColeta> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController pesoController = TextEditingController();
   TextEditingController alturaController = TextEditingController();
+  CalculoImcColeta calculoImcColeta = new CalculoImcColeta();
+  RetornaTipoEmTexto retornaTipoEmTexto = new RetornaTipoEmTexto();
+  SalvarConsulta salvarConsulta = new SalvarConsulta();
+  ValidaFormulario validaFormulario = new ValidaFormulario();
   double resultadoCalculoIMC = 0.0;
   String textoResultado = '';
   bool visibleResult = false;
@@ -83,7 +87,7 @@ class _FormColetaState extends State<FormColeta> {
                           readOnly: disabledFieldPeso,
                           keyboardType: TextInputType.number,
                           maxLength: 3,
-                          validator: validaCampoPeso,
+                          validator: validaFormulario.validaCampoPeso,
                           controller: pesoController,
                           style: const TextStyle(
                             fontSize: 18.0,
@@ -146,14 +150,16 @@ class _FormColetaState extends State<FormColeta> {
         child: InkWell(
           onTap: () async {
             if (nameButton == 'Calcular' && _formKey.currentState!.validate()) {
-              double valorImc = calculoImc(
+              double valorImc = calculoImcColeta.calculoImc(
                 alturaController.text,
                 pesoController.text,
               );
+              String resultadoTextImc = retornaTipoEmTexto.resultadoImc(
+                valorImc,
+              );
               consultaUser.valorimc = valorImc;
-              var resultadoTextImc = resultadoImc(valorImc);
               consultaUser.resultadoimc = resultadoTextImc;
-              acionaSnackBar(
+              snackBar(
                 context,
                 'Clique em "Finalizar" para salvar no Historico.',
               );
@@ -167,7 +173,7 @@ class _FormColetaState extends State<FormColeta> {
             } else {
               consultaUser.peso = pesoController.text;
               consultaUser.data = getDataAtual();
-              await saveConsulta();
+              await salvarConsulta.save();
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const InicioScreen()),
                 (Route<dynamic> route) => false,
@@ -189,13 +195,6 @@ class _FormColetaState extends State<FormColeta> {
           ),
         ),
       ),
-    );
-  }
-
-  void acionaSnackBar(BuildContext context, mensagem) {
-    snackBar(
-      context,
-      mensagem,
     );
   }
 }

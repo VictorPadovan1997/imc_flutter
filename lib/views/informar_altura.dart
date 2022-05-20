@@ -11,7 +11,8 @@ class InformarAltura extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    TextEditingController alturaController = TextEditingController();
+    TextEditingController alturaField = TextEditingController();
+    AlturaController alturaController = new AlturaController();
 
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +58,7 @@ class InformarAltura extends StatelessWidget {
                             FilteringTextInputFormatter.digitsOnly,
                           ],
                           maxLength: 3,
-                          controller: alturaController,
+                          controller: alturaField,
                           textInputAction: TextInputAction.done,
                           style: const TextStyle(
                             fontSize: 18.0,
@@ -87,14 +88,14 @@ class InformarAltura extends StatelessWidget {
       bottomNavigationBar: BottomAppBar(
         child: InkWell(
           onTap: () async {
-            if (alturaController.text == '') {
+            if (alturaField.text == '') {
               snackBar(
                 context,
                 'É obrigatorio informar sua altura para continuarmos',
               );
             }
             if (_formKey.currentState!.validate()) {
-              saveAltura(alturaController.text);
+              alturaController.saveAltura(alturaField.text);
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const InicioScreen()),
                 (Route<dynamic> route) => false,
