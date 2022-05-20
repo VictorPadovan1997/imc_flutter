@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:imc_flutter/controllers/historico_controller.dart';
 import 'package:imc_flutter/models/consulta_user.dart';
-import 'package:imc_flutter/shared/constantes.dart';
 
 class ListaColetaHistorico extends StatefulWidget {
   final List<ConsultaUser> consultaUserListHistorico;
@@ -12,6 +12,8 @@ class ListaColetaHistorico extends StatefulWidget {
 }
 
 class _ListaColetaHistoricoState extends State<ListaColetaHistorico> {
+  RemoveHistoricoSqlite removeHistoricoSqlite = RemoveHistoricoSqlite();
+  RemoveHistocioList removeHistocioList = RemoveHistocioList();
   @override
   Widget build(BuildContext context) {
     var listaHistorico = widget.consultaUserListHistorico;
@@ -68,10 +70,14 @@ class _ListaColetaHistoricoState extends State<ListaColetaHistorico> {
                               trailing: GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    consultaDao
-                                        .delete(listaHistorico[index].id);
-                                    listaHistorico
-                                        .remove(listaHistorico[index]);
+                                    removeHistoricoSqlite.delete(
+                                      listaHistorico,
+                                      index,
+                                    );
+                                    removeHistocioList.remove(
+                                      listaHistorico,
+                                      index,
+                                    );
                                   });
                                 },
                                 child: Wrap(
